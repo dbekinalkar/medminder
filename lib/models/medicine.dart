@@ -14,4 +14,27 @@ class Medicine {
     required this.reminderTimes,
     required this.notes,
   });
+
+  Map<String, dynamic> toMap() {
+  return {
+    'id': id,
+    'name': name,
+    'dosage': dosage,
+    'frequency': frequency,
+    'reminderTimes': reminderTimes.join(','),  // Convert list to comma-separated string
+    'notes': notes,
+  };
+}
+
+static Medicine fromMap(Map<String, dynamic> map) {
+  return Medicine(
+    id: map['id'],
+    name: map['name'],
+    dosage: map['dosage'],
+    frequency: map['frequency'],
+    reminderTimes: map['reminderTimes'].split(','),  // Convert string back to list
+    notes: map['notes'],
+  );
+}
+
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../database/db_helper.dart';
+import '../models/medicine.dart';
+
 class AddEditMedicineScreen extends StatefulWidget {
   const AddEditMedicineScreen({super.key});
 
@@ -9,6 +12,11 @@ class AddEditMedicineScreen extends StatefulWidget {
 
 class _AddEditMedicineScreenState extends State<AddEditMedicineScreen> {
   final _formKey = GlobalKey<FormState>();
+  String _name = '';
+  String _dosage = '';
+  String _frequency = '';
+  List<String> _reminderTimes = [];
+  String _notes = '';
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +35,58 @@ class _AddEditMedicineScreenState extends State<AddEditMedicineScreen> {
                 }
                 return null;
               },
+              onSaved: (value) {
+                _name = value!;
+              },
             ),
-            //... Add other fields here: Dosage, Frequency, Reminder Times, Notes
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Dosage'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter the dosage.';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                _dosage = value!;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Frequency'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter the frequency.';
+                }
+                return null;
+              },
+              onSaved: (value) {
+                _frequency = value!;
+              },
+            ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Notes'),
+              onSaved: (value) {
+                _notes = value!;
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           // Validate and save the form
           if (_formKey.currentState!.validate()) {
-            // Save medicine details to database
+            _formKey.currentState!.save();
+            final newMedicine = Medicine(
+              id: DateTime.now().toString(),
+              name: _name,
+              dosage: _dosage,
+              frequency: _frequency,
+              reminderTimes: _reminderTimes,
+              notes: _notes,
+            );
+            await DBHelper.insert(newMedicine);
+            Navigator.of(context).pop(newMedicine);
           }
         },
         child: const Icon(Icons.save),
@@ -44,3 +94,4 @@ class _AddEditMedicineScreenState extends State<AddEditMedicineScreen> {
     );
   }
 }
+
