@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'helpers/notification_helper.dart';
 import 'screens/add_edit_medicine_screen.dart';
 import 'screens/home_screen.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-void main() => runApp(const MyApp());
+
+void main() {
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('America/New_York'));  // replace with your preferred time zone
+  runApp(const MyApp());
+  NotificationHelper.initNotifications();
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,7 +29,6 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomeScreen(),
         '/add-edit-medicine': (context) => AddEditMedicineScreen(),
       },
-
     );
   }
 }
